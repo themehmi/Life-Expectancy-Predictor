@@ -3,154 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Result | The Earth Index</title>
+    <title>Analysis Result | LifePath AI</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
-    :root {
-        --stone: #1a1a1a;
-        --linen: #e8e8e4;
-        --gold-leaf: #cfb53b;
-        --critical: #ff4d4d;
-        --warning: #ffcc00;
-        --stable: #00d2ff;
-        --optimal: #00ff88;
-    }
+        :root {
+            --bg-color: #f0f4f8;
+            --primary: #10b981; /* Mint Green */
+            --dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.9);
+            --critical: #ef4444;
+            --warning: #f59e0b;
+            --stable: #3b82f6;
+        }
 
-    body {
-        background-color: var(--stone);
-        color: var(--linen);
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        /* Removed overflow: hidden to allow mobile scrolling */
-        min-height: 100vh;
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
 
-    /* Layout: Stacks on mobile, split on desktop */
-    .split-layout { 
-        display: flex; 
-        flex-direction: column;
-        min-height: 100vh; 
-    }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
 
-    .sidebar-visual {
-        width: 100%;
-        height: 30vh; /* Shorter header on mobile */
-        background: linear-gradient(rgba(26, 26, 26, 0.75), rgba(26, 26, 26, 0.75)), 
-                    url('https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=2000');
-        background-size: cover;
-        background-position: center;
-        display: flex; align-items: center; justify-content: center;
-        border-bottom: 1px solid rgba(207, 181, 59, 0.2);
-    }
+        /* --- Sidebar (Matched to Survey) --- */
+        .sidebar {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px;
+            z-index: 100;
+        }
 
-    .result-content {
-        width: 100%;
-        display: flex; flex-direction: column; justify-content: center;
-        padding: 60px 10%;
-        background: radial-gradient(circle at bottom right, #1e2411, var(--stone));
-        flex-grow: 1;
-    }
+        .sidebar h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
 
-    /* Desktop Media Query */
-    @media (min-width: 992px) {
-        .split-layout { flex-direction: row; overflow: hidden; height: 100vh; }
-        .sidebar-visual { width: 45%; height: 100vh; border-right: 1px solid rgba(207, 181, 59, 0.2); border-bottom: none; }
-        .result-content { width: 55%; padding: 0 10%; }
-    }
+        .report-status {
+            padding: 15px;
+            border: 1px dashed #334155;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
 
-    /* Animations */
-    .reveal-box {
-        opacity: 0;
-        transform: translateY(40px);
-        animation: revealUp 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-    }
+        /* --- Main Content --- */
+        .main-content {
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-    @keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
+        .result-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            border: 1px solid white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
 
-    .prediction-value {
-        font-family: 'Cormorant Garamond', serif;
-        /* Fluid Font Size: Scales between 5rem and 10rem based on screen width */
-        font-size: clamp(5rem, 15vw, 10rem); 
-        line-height: 0.8;
-        margin: 20px 0;
-        animation: pulseGlow 3s infinite ease-in-out;
-    }
+        /* --- Prediction Typography --- */
+        .prediction-label {
+            letter-spacing: 3px;
+            font-weight: 700;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
 
-    @keyframes pulseGlow {
-        0%, 100% { filter: drop-shadow(0 0 15px currentColor); transform: scale(1); }
-        50% { filter: drop-shadow(0 0 40px currentColor); transform: scale(1.02); }
-    }
+        .prediction-value {
+            font-size: clamp(6rem, 15vw, 10rem);
+            font-weight: 700;
+            line-height: 1;
+            margin: 20px 0;
+            font-family: 'Outfit', sans-serif;
+        }
 
-    .val-critical { color: var(--critical); }
-    .val-warning  { color: var(--warning); }
-    .val-stable   { color: var(--stable); }
-    .val-optimal  { color: var(--optimal); }
+        .unit { font-size: 1.5rem; color: #94a3b8; vertical-align: middle; }
 
-    .btn-return {
-        margin-top: 50px;
-        display: inline-block;
-        color: var(--linen);
-        text-decoration: none;
-        font-size: 0.7rem;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        border-bottom: 1px solid var(--gold-leaf);
-        padding-bottom: 8px;
-        transition: 0.4s;
-    }
+        /* Dynamic Colors */
+        .color-critical { color: var(--critical); }
+        .color-warning  { color: var(--warning); }
+        .color-stable   { color: var(--stable); }
+        .color-optimal  { color: var(--primary); }
 
-    .btn-return:hover { color: var(--gold-leaf); padding-left: 10px; }
-</style>
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        /* --- Return Button --- */
+        .btn-return {
+            background: var(--dark);
+            color: white;
+            text-decoration: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 40px;
+            transition: 0.3s;
+        }
+
+        .btn-return:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        /* --- Responsive Logic --- */
+        @media (min-width: 992px) {
+            body { display: flex; }
+            .sidebar { width: 300px; height: 100vh; position: fixed; }
+            .main-content { margin-left: 300px; padding: 80px; width: calc(100% - 300px); }
+        }
+
+        @media (max-width: 991px) {
+            .sidebar { width: 100%; text-align: center; padding: 20px; }
+            .report-status { display: none; }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="split-layout">
-        <div class="sidebar-visual">
-            <div style="border: 1px solid var(--gold-leaf); padding: 30px; backdrop-filter: blur(5px);">
-                <span style="letter-spacing: 5px; font-size: 0.7rem;">ANALYSIS COMPLETE</span>
-            </div>
+    <aside class="sidebar">
+        <h1>LifePath AI</h1>
+        <div class="report-status">
+            STATUS: ANALYSIS COMPLETE<br>
+            REF: {{ range(100000, 999999) | random }}<br>
+            ENGINE: V.3-FLASH
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header-section mb-4">
+            <h4 class="text-primary fw-bold" style="font-size: 0.9rem; letter-spacing: 2px;">CALCULATION SUCCESSFUL</h4>
+            <h1 class="display-6 fw-bold">Your Longevity Report</h1>
         </div>
 
-        <div class="result-content">
-            <div class="reveal-box">
-                <span style="letter-spacing: 5px; color: var(--gold-leaf); font-size: 0.8rem;">VITALITY INDEX</span>
-                
+        <div class="result-card">
+            <div class="reveal-animation">
                 {% if pred is not none %}
-                    {% if pred is number or (pred|float != 0.0 or pred == '0' or pred == 0) %}
-                        {% set val = pred | float %}
+                    {% set val = pred | float %}
+                    
+                    <div class="status-badge 
+                        {% if val <= 55 %}bg-danger-subtle text-danger
+                        {% elif val <= 70 %}bg-warning-subtle text-warning
+                        {% else %}bg-success-subtle text-success{% endif %}">
                         
-                        <h1 class="prediction-value 
-                            {% if val <= 25 %}val-critical
-                            {% elif val <= 50 %}val-warning
-                            {% elif val <= 75 %}val-stable
-                            {% else %}val-optimal
-                            {% endif %}">
-                            {{ pred }}
-                        </h1>
-                        
-                        <p style="color: #888; max-width: 400px; margin-top: 20px;">
-                            <strong>
-                                {% if val <= 25 %}Critical
-                                {% elif val <= 50 %}Vulnerable
-                                {% elif val <= 75 %}Established
-                                {% else %}Exceptional
-                                {% endif %}
-                            </strong> health markers.
-                        </p>
-                    {% else %}
-                        <div class="alert alert-danger bg-transparent border-danger text-danger mt-4">
-                            {{ pred }}
-                        </div>
-                    {% endif %}
+                        {% if val <= 55 %}Action Required
+                        {% elif val <= 70 %}Moderate Health Index
+                        {% else %}Optimal Vitality{% endif %}
+                    </div>
+
+                    <p class="prediction-label">Estimated Life Expectancy</p>
+                    
+                    <h1 class="prediction-value 
+                        {% if val <= 55 %}color-critical
+                        {% elif val <= 70 %}color-warning
+                        {% else %}color-optimal{% endif %}">
+                        {{ pred }}<span class="unit">yrs</span>
+                    </h1>
+
+                    <p class="text-muted mx-auto" style="max-width: 500px; font-size: 1.1rem;">
+                        Based on the 19 localized insights provided, your country's health markers suggest a life expectancy of <strong>{{ pred }} years</strong>. 
+                    </p>
+                {% else %}
+                    <h3 class="text-danger">Error processing request</h3>
+                    <p>Please ensure all fields are correctly filled.</p>
                 {% endif %}
 
-                <a href="/" class="btn-return">Begin New Sequence</a>
+                <a href="/" class="btn-return">➔ Start New Analysis</a>
             </div>
         </div>
-    </div>
+
+        <div class="mt-5 p-4 border-start border-4 border-primary bg-white rounded shadow-sm">
+            <h5 class="fw-bold">Understanding the Metric</h5>
+            <p class="text-muted small mb-0">
+                This projection is generated using a multivariate regression model. It accounts for biological vitals, economic resource composition, and immunological resilience levels relative to global averages.
+            </p>
+        </div>
+    </main>
 
 </body>
-
 </html>
 
