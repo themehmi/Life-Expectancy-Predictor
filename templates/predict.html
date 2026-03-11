@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result | The Earth Index</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+    :root {
+        --stone: #1a1a1a;
+        --linen: #e8e8e4;
+        --gold-leaf: #cfb53b;
+        --critical: #ff4d4d;
+        --warning: #ffcc00;
+        --stable: #00d2ff;
+        --optimal: #00ff88;
+    }
+
+    body {
+        background-color: var(--stone);
+        color: var(--linen);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        /* Removed overflow: hidden to allow mobile scrolling */
+        min-height: 100vh;
+    }
+
+    /* Layout: Stacks on mobile, split on desktop */
+    .split-layout { 
+        display: flex; 
+        flex-direction: column;
+        min-height: 100vh; 
+    }
+
+    .sidebar-visual {
+        width: 100%;
+        height: 30vh; /* Shorter header on mobile */
+        background: linear-gradient(rgba(26, 26, 26, 0.75), rgba(26, 26, 26, 0.75)), 
+                    url('https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=2000');
+        background-size: cover;
+        background-position: center;
+        display: flex; align-items: center; justify-content: center;
+        border-bottom: 1px solid rgba(207, 181, 59, 0.2);
+    }
+
+    .result-content {
+        width: 100%;
+        display: flex; flex-direction: column; justify-content: center;
+        padding: 60px 10%;
+        background: radial-gradient(circle at bottom right, #1e2411, var(--stone));
+        flex-grow: 1;
+    }
+
+    /* Desktop Media Query */
+    @media (min-width: 992px) {
+        .split-layout { flex-direction: row; overflow: hidden; height: 100vh; }
+        .sidebar-visual { width: 45%; height: 100vh; border-right: 1px solid rgba(207, 181, 59, 0.2); border-bottom: none; }
+        .result-content { width: 55%; padding: 0 10%; }
+    }
+
+    /* Animations */
+    .reveal-box {
+        opacity: 0;
+        transform: translateY(40px);
+        animation: revealUp 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
+
+    .prediction-value {
+        font-family: 'Cormorant Garamond', serif;
+        /* Fluid Font Size: Scales between 5rem and 10rem based on screen width */
+        font-size: clamp(5rem, 15vw, 10rem); 
+        line-height: 0.8;
+        margin: 20px 0;
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+        0%, 100% { filter: drop-shadow(0 0 15px currentColor); transform: scale(1); }
+        50% { filter: drop-shadow(0 0 40px currentColor); transform: scale(1.02); }
+    }
+
+    .val-critical { color: var(--critical); }
+    .val-warning  { color: var(--warning); }
+    .val-stable   { color: var(--stable); }
+    .val-optimal  { color: var(--optimal); }
+
+    .btn-return {
+        margin-top: 50px;
+        display: inline-block;
+        color: var(--linen);
+        text-decoration: none;
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--gold-leaf);
+        padding-bottom: 8px;
+        transition: 0.4s;
+    }
+
+    .btn-return:hover { color: var(--gold-leaf); padding-left: 10px; }
+</style>
+</head>
+<body>
+
+    <div class="split-layout">
+        <div class="sidebar-visual">
+            <div style="border: 1px solid var(--gold-leaf); padding: 30px; backdrop-filter: blur(5px);">
+                <span style="letter-spacing: 5px; font-size: 0.7rem;">ANALYSIS COMPLETE</span>
+            </div>
+        </div>
+
+        <div class="result-content">
+            <div class="reveal-box">
+                <span style="letter-spacing: 5px; color: var(--gold-leaf); font-size: 0.8rem;">VITALITY INDEX</span>
+                
+                {% if pred is not none %}
+                    {% if pred is number or (pred|float != 0.0 or pred == '0' or pred == 0) %}
+                        {% set val = pred | float %}
+                        
+                        <h1 class="prediction-value 
+                            {% if val <= 25 %}val-critical
+                            {% elif val <= 50 %}val-warning
+                            {% elif val <= 75 %}val-stable
+                            {% else %}val-optimal
+                            {% endif %}">
+                            {{ pred }}
+                        </h1>
+                        
+                        <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2rem;">Circuits of the Sun</p>
+                        
+                        <p style="color: #888; max-width: 400px; margin-top: 20px;">
+                            The Earth's data suggests a trajectory of 
+                            <strong>
+                                {% if val <= 25 %}Critical
+                                {% elif val <= 50 %}Vulnerable
+                                {% elif val <= 75 %}Established
+                                {% else %}Exceptional
+                                {% endif %}
+                            </strong> health markers.
+                        </p>
+                    {% else %}
+                        <div class="alert alert-danger bg-transparent border-danger text-danger mt-4">
+                            {{ pred }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <a href="/" class="btn-return">Begin New Sequence</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
