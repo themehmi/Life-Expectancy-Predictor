@@ -25,7 +25,7 @@
 
         h1, h2, h3 { font-family: 'Outfit', sans-serif; }
 
-        /* --- Sidebar & Navigation --- */
+        /* --- Sidebar --- */
         .sidebar {
             background-color: var(--dark);
             color: white;
@@ -51,16 +51,11 @@
         .nav-link-custom.active { color: white; font-weight: 600; }
         .dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; margin-right: 12px; }
 
-        /* --- Main Content Area --- */
+        /* --- Main Content --- */
         .main-content {
             padding: 40px 20px;
             max-width: 900px;
             margin: 0 auto;
-        }
-
-        .header-section {
-            margin-bottom: 50px;
-            text-align: left;
         }
 
         .category-card {
@@ -94,28 +89,28 @@
             margin-right: 12px;
         }
 
-        /* --- Responsive Inputs --- */
-        .form-label {
-            font-size: 0.8rem;
-            font-weight: 600;
+        /* --- Custom Range Slider Styling --- */
+        .form-range::-webkit-slider-thumb { background: var(--primary); }
+        .form-range::-moz-range-thumb { background: var(--primary); }
+        .form-range::-ms-thumb { background: var(--primary); }
+        
+        .range-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             color: #64748b;
+            margin-bottom: 8px;
         }
 
-        .form-control, .form-select {
-            border: 2px solid #f1f5f9;
-            border-radius: 12px;
-            padding: 12px;
-            transition: 0.3s;
+        .current-value {
+            color: var(--primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
         }
 
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-        }
-
-        /* --- The "Predict" Button --- */
         .btn-predict {
             background: var(--dark);
             color: white;
@@ -135,26 +130,15 @@
             box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
         }
 
-        /* --- Desktop Specific (Side-by-Side) --- */
         @media (min-width: 992px) {
             body { display: flex; }
-            .sidebar {
-                width: 300px;
-                height: 100vh;
-                position: fixed;
-            }
-            .main-content {
-                margin-left: 300px;
-                padding: 80px;
-                width: calc(100% - 300px);
-            }
+            .sidebar { width: 300px; height: 100vh; position: fixed; }
+            .main-content { margin-left: 300px; padding: 80px; width: calc(100% - 300px); }
         }
 
-        /* --- Tablet/Mobile Specific (Stacked) --- */
         @media (max-width: 991px) {
             .sidebar { width: 100%; height: auto; padding: 20px; text-align: center; }
-            .sidebar h1 { margin-bottom: 0; }
-            .nav-link-custom { display: none; } /* Hide steps on mobile for cleaner look */
+            .nav-link-custom { display: none; }
         }
     </style>
 </head>
@@ -169,12 +153,10 @@
     </aside>
 
     <main class="main-content">
-        <div class="header-section">
+        <div class="header-section mb-5">
             <h4 class="text-primary fw-bold" style="font-size: 0.9rem; letter-spacing: 2px;">GLOBAL ANALYSIS</h4>
             <h1 class="display-5 fw-bold">Health Marker Survey</h1>
-            <p class="text-muted" style="font-size: 1.1rem; max-width: 650px;">
-                To generate a precise life expectancy projection for your region, please provide the following socioeconomic and health indicators.
-            </p>
+            <p class="text-muted">Adjust the sliders to reflect the current health and economic data for your region.</p>
         </div>
 
         <form action="/predict" method="POST">
@@ -184,26 +166,26 @@
                     <span>1</span>
                     <h3 class="m-0 h5">Biological Vitals</h3>
                 </div>
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-sm-6">
-                        <label class="form-label">Adult Mortality Rate</label>
-                        <input type="number" step="any" name="adult_mortality" class="form-control" placeholder="Per 1000" required>
+                        <label class="range-label">Adult Mortality Rate <span class="current-value" id="v-adult_mortality">150</span></label>
+                        <input type="range" name="adult_mortality" class="form-range" min="1" max="700" value="150" oninput="update(this)">
                     </div>
                     <div class="col-sm-6">
-                        <label class="form-label">BMI</label>
-                        <input type="number" step="any" name="bmi" class="form-control" placeholder="kg/m²" required>
+                        <label class="range-label">BMI <span class="current-value" id="v-bmi">25.0</span></label>
+                        <input type="range" name="bmi" class="form-range" min="10" max="60" step="0.1" value="25" oninput="update(this)">
                     </div>
                     <div class="col-4">
-                        <label class="form-label">Infant Deaths</label>
-                        <input type="number" step="any" name="infant_deaths" class="form-control" required>
+                        <label class="range-label">Infant <span class="current-value" id="v-infant_deaths">20</span></label>
+                        <input type="range" name="infant_deaths" class="form-range" min="0" max="200" value="20" oninput="update(this)">
                     </div>
                     <div class="col-4">
-                        <label class="form-label">U5 Deaths</label>
-                        <input type="number" step="any" name="under_five_deaths" class="form-control" required>
+                        <label class="range-label">HIV/AIDS <span class="current-value" id="v-hiv_aids">0.1</span></label>
+                        <input type="range" name="hiv_aids" class="form-range" min="0" max="50" step="0.1" value="0.1" oninput="update(this)">
                     </div>
                     <div class="col-4">
-                        <label class="form-label">HIV/AIDS</label>
-                        <input type="number" step="any" name="hiv_aids" class="form-control" required>
+                        <label class="range-label">U5 Deaths <span class="current-value" id="v-under_five_deaths">30</span></label>
+                        <input type="range" name="under_five_deaths" class="form-range" min="0" max="300" value="30" oninput="update(this)">
                     </div>
                 </div>
             </div>
@@ -211,24 +193,20 @@
             <div class="category-card">
                 <div class="category-header">
                     <span>2</span>
-                    <h3 class="m-0 h5">Immunity Resilience</h3>
+                    <h3 class="m-0 h5">Immunity Resilience (%)</h3>
                 </div>
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-sm-4">
-                        <label class="form-label">Hepatitis B %</label>
-                        <input type="number" step="any" name="hepatitis_b" class="form-control" required>
+                        <label class="range-label">Hepatitis B <span class="current-value" id="v-hepatitis_b">85</span></label>
+                        <input type="range" name="hepatitis_b" class="form-range" min="0" max="100" value="85" oninput="update(this)">
                     </div>
                     <div class="col-sm-4">
-                        <label class="form-label">Polio %</label>
-                        <input type="number" step="any" name="polio" class="form-control" required>
+                        <label class="range-label">Polio <span class="current-value" id="v-polio">90</span></label>
+                        <input type="range" name="polio" class="form-range" min="0" max="100" value="90" oninput="update(this)">
                     </div>
                     <div class="col-sm-4">
-                        <label class="form-label">Diphtheria %</label>
-                        <input type="number" step="any" name="diphtheria" class="form-control" required>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Measles (Total Cases)</label>
-                        <input type="number" step="any" name="measles" class="form-control" required>
+                        <label class="range-label">Diphtheria <span class="current-value" id="v-diphtheria">90</span></label>
+                        <input type="range" name="diphtheria" class="form-range" min="0" max="100" value="90" oninput="update(this)">
                     </div>
                 </div>
             </div>
@@ -238,58 +216,25 @@
                     <span>3</span>
                     <h3 class="m-0 h5">Economic Resources</h3>
                 </div>
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-sm-6">
-                        <label class="form-label">GDP (Per Capita)</label>
-                        <input type="number" step="any" name="gdp" class="form-control" required>
+                        <label class="range-label">GDP (Capita) <span class="current-value" id="v-gdp">10000</span></label>
+                        <input type="range" name="gdp" class="form-range" min="100" max="100000" step="100" value="10000" oninput="update(this)">
                     </div>
                     <div class="col-sm-6">
-                        <label class="form-label">Schooling (Years)</label>
-                        <input type="number" step="any" name="schooling" class="form-control" required>
+                        <label class="range-label">Schooling (Yrs) <span class="current-value" id="v-schooling">12</span></label>
+                        <input type="range" name="schooling" class="form-range" min="0" max="22" step="0.5" value="12" oninput="update(this)">
                     </div>
                     <div class="col-md-8">
-                        <label class="form-label">Income Composition</label>
-                        <input type="number" step="0.001" name="income_composition" class="form-control" required>
+                        <label class="range-label">Income Composition <span class="current-value" id="v-income_composition">0.650</span></label>
+                        <input type="range" name="income_composition" class="form-range" min="0" max="1" step="0.001" value="0.650" oninput="update(this)">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Status</label>
+                        <label class="range-label">Status</label>
                         <select name="status_developing" class="form-select">
                             <option value="True">Developing</option>
                             <option value="False">Developed</option>
                         </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="form-label">Population</label>
-                        <input type="number" step="any" name="population" class="form-control" required>
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="form-label">Thinness 1-19</label>
-                        <input type="number" step="any" name="thinness_1_19" class="form-control" required>
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="form-label">Thinness 5-9</label>
-                        <input type="number" step="any" name="thinness_5_9" class="form-control" required>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-card">
-                <div class="category-header">
-                    <span>4</span>
-                    <h3 class="m-0 h5">Lifestyle Pattern</h3>
-                </div>
-                <div class="row g-3">
-                    <div class="col-sm-4">
-                        <label class="form-label">Alcohol Intake</label>
-                        <input type="number" step="any" name="alcohol" class="form-control" required>
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="form-label">% Health Expenditure</label>
-                        <input type="number" step="any" name="percentage_expenditure" class="form-control" required>
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="form-label">Total Expenditure</label>
-                        <input type="number" step="any" name="total_expenditure" class="form-control" required>
                     </div>
                 </div>
             </div>
@@ -298,9 +243,16 @@
         </form>
 
         <footer class="mt-5 text-center text-muted" style="font-size: 0.8rem;">
-            © 2026 LifePath AI Prediction Engine. Data sourced from global health databases.
+            © 2026 LifePath AI Prediction Engine. 
         </footer>
     </main>
 
+    <script>
+        function update(slider) {
+            // Update the text in the span that matches the slider's name
+            const display = document.getElementById('v-' + slider.name);
+            display.innerText = slider.value;
+        }
+    </script>
 </body>
 </html>
