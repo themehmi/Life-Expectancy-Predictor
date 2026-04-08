@@ -3,178 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifePath AI | Global Longevity Survey</title>
+    <title>LifePath AI | Bio-Digital Analysis</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #f0f4f8;
-            --primary: #10b981;
-            --dark: #0f172a;
-            --glass: rgba(255, 255, 255, 0.9);
+            --bg-deep: #020617;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --accent-neon: #2dd4bf; /* Teal Neon */
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border-glow: rgba(45, 212, 191, 0.2);
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--dark);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            background-color: var(--bg-deep);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
         }
 
-        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        h1, h2, h3, .accent-font { font-family: 'Space Grotesk', sans-serif; }
 
-        .sidebar { background-color: var(--dark); color: white; padding: 40px; z-index: 100; }
-        .sidebar h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 30px; }
-        .nav-link-custom { display: flex; align-items: center; color: #94a3b8; text-decoration: none; margin-bottom: 20px; font-size: 0.9rem; }
-        .nav-link-custom.active { color: white; font-weight: 600; }
-        .dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; margin-right: 12px; }
+        /* Introduction Section Styling */
+        .intro-container {
+            border-left: 3px solid var(--accent-neon);
+            padding-left: 25px;
+            margin-bottom: 50px;
+        }
 
-        .main-content { padding: 40px 20px; max-width: 900px; margin: 0 auto; }
-        .category-card { background: var(--glass); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; margin-bottom: 30px; border: 1px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .category-header { display: flex; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
-        .category-header span { background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-right: 12px; }
+        .main-wrapper { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
 
-        .form-range::-webkit-slider-thumb { background: var(--primary); }
-        .range-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 8px; }
-        .current-value { color: var(--primary); font-family: 'Outfit', sans-serif; font-size: 1rem; }
+        .category-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
 
-        .btn-predict { background: var(--dark); color: white; border: none; padding: 20px; border-radius: 12px; font-weight: 700; width: 100%; font-size: 1.1rem; margin-top: 20px; transition: 0.3s; cursor: pointer; }
-        .btn-predict:hover { background: var(--primary); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); }
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-neon);
+        }
 
-        @media (min-width: 992px) {
-            body { display: flex; }
-            .sidebar { width: 300px; height: 100vh; position: fixed; }
-            .main-content { margin-left: 300px; padding: 80px; width: calc(100% - 300px); }
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .category-header .badge-num {
+            background: transparent;
+            border: 1px solid var(--accent-neon);
+            color: var(--accent-neon);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Form Controls */
+        .range-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .current-value { color: var(--accent-neon); font-weight: bold; }
+
+        .form-range::-webkit-slider-thumb { background: var(--accent-neon); box-shadow: 0 0 10px var(--accent-neon); }
+        
+        .form-select {
+            background-color: #0f172a;
+            border: 1px solid var(--border-glow);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .btn-predict {
+            background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
+            color: #020617;
+            border: none;
+            padding: 22px;
+            border-radius: 16px;
+            font-weight: 800;
+            width: 100%;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-predict:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(45, 212, 191, 0.4);
         }
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <h1>LifePath AI</h1>
-        <div class="nav-link-custom active"><div class="dot"></div> 01. Parameters</div>
-    </aside>
 
-    <main class="main-content">
-        <div class="header-section mb-5">
-            <h4 class="text-primary fw-bold" style="font-size: 0.9rem; letter-spacing: 2px;">GLOBAL DATASET CALIBRATED</h4>
-            <h1 class="display-5 fw-bold">Longevity Markers</h1>
-            <p class="text-muted">Adjust markers based on actual global data ranges (Min-Max).</p>
-        </div>
+    <div class="main-wrapper">
+        <header class="intro-container">
+            <h4 class="text-uppercase tracking-widest mb-2" style="color: var(--accent-neon); font-size: 0.8rem; letter-spacing: 4px;">Predictive Bio-Analytics</h4>
+            <h1 class="display-4 fw-bold mb-3">Project LifePath AI</h1>
+            <p class="lead text-dim" style="max-width: 700px;">
+                Welcome to the Global Longevity Simulator. This engine utilizes high-dimensional data calibrated against 
+                <strong>World Health Organization (WHO)</strong> archives to estimate life expectancy. 
+                By adjusting the biological, economic, and social markers below, you can simulate how micro-level 
+                health interventions and macro-level economic shifts influence human lifespan.
+            </p>
+        </header>
 
         <form action="/predict" method="POST">
             <div class="category-card">
-                <div class="category-header"><span>1</span><h3 class="m-0 h5">Biological & Mortality</h3></div>
-                <div class="row g-4">
-                    <div class="col-sm-6">
+                <div class="category-header">
+                    <div class="badge-num">01</div>
+                    <h3 class="m-0 h4">Biometric & Mortality Vectors</h3>
+                </div>
+                <div class="row g-5">
+                    <div class="col-md-6">
                         <label class="range-label">Adult Mortality <span class="current-value" id="v-adult_mortality">165</span></label>
                         <input type="range" name="adult_mortality" class="form-range" min="1" max="723" value="165" oninput="update(this)">
                     </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">BMI <span class="current-value" id="v-bmi">38.3</span></label>
+                    <div class="col-md-6">
+                        <label class="range-label">Body Mass Index (BMI) <span class="current-value" id="v-bmi">38.3</span></label>
                         <input type="range" name="bmi" class="form-range" min="1" max="87" step="0.1" value="38.3" oninput="update(this)">
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-md-4">
+                        <label class="range-label">HIV/AIDS Impact <span class="current-value" id="v-hiv_aids">1.7</span></label>
+                        <input type="range" name="hiv_aids" class="form-range" min="0.1" max="50.6" step="0.1" value="1.7" oninput="update(this)">
+                    </div>
+                    <div class="col-md-4">
                         <label class="range-label">Infant Deaths <span class="current-value" id="v-infant_deaths">30</span></label>
                         <input type="range" name="infant_deaths" class="form-range" min="0" max="1800" value="30" oninput="update(this)">
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-md-4">
                         <label class="range-label">Under-5 Deaths <span class="current-value" id="v-under_five_deaths">42</span></label>
                         <input type="range" name="under_five_deaths" class="form-range" min="0" max="2500" value="42" oninput="update(this)">
                     </div>
-                    <div class="col-sm-4">
-                        <label class="range-label">HIV/AIDS <span class="current-value" id="v-hiv_aids">1.7</span></label>
-                        <input type="range" name="hiv_aids" class="form-range" min="0.1" max="50.6" step="0.1" value="1.7" oninput="update(this)">
-                    </div>
                 </div>
             </div>
 
             <div class="category-card">
-                <div class="category-header"><span>2</span><h3 class="m-0 h5">Immunity & Disease</h3></div>
-                <div class="row g-4">
-                    <div class="col-sm-6">
-                        <label class="range-label">Hepatitis B % <span class="current-value" id="v-hepatitis_b">81</span></label>
+                <div class="category-header">
+                    <div class="badge-num">02</div>
+                    <h3 class="m-0 h4">Immunization Infrastructure</h3>
+                </div>
+                <div class="row g-5">
+                    <div class="col-md-4">
+                        <label class="range-label">Hepatitis B (%) <span class="current-value" id="v-hepatitis_b">81</span></label>
                         <input type="range" name="hepatitis_b" class="form-range" min="1" max="99" value="81" oninput="update(this)">
                     </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">Polio % <span class="current-value" id="v-polio">83</span></label>
+                    <div class="col-md-4">
+                        <label class="range-label">Polio (%) <span class="current-value" id="v-polio">83</span></label>
                         <input type="range" name="polio" class="form-range" min="3" max="99" value="83" oninput="update(this)">
                     </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">Diphtheria % <span class="current-value" id="v-diphtheria">82</span></label>
+                    <div class="col-md-4">
+                        <label class="range-label">Diphtheria (%) <span class="current-value" id="v-diphtheria">82</span></label>
                         <input type="range" name="diphtheria" class="form-range" min="2" max="99" value="82" oninput="update(this)">
                     </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">Measles Cases <span class="current-value" id="v-measles">2420</span></label>
-                        <input type="range" name="measles" class="form-range" min="0" max="212183" step="10" value="2420" oninput="update(this)">
-                    </div>
                 </div>
             </div>
 
             <div class="category-card">
-                <div class="category-header"><span>3</span><h3 class="m-0 h5">Economy & Lifestyle</h3></div>
-                <div class="row g-4">
-                    <div class="col-sm-6">
-                        <label class="range-label">GDP ($) <span class="current-value" id="v-gdp">7483</span></label>
+                <div class="category-header">
+                    <div class="badge-num">03</div>
+                    <h3 class="m-0 h4">Socio-Economic Engine</h3>
+                </div>
+                <div class="row g-5">
+                    <div class="col-md-6">
+                        <label class="range-label">GDP Per Capita ($) <span class="current-value" id="v-gdp">7483</span></label>
                         <input type="range" name="gdp" class="form-range" min="2" max="119173" step="100" value="7483" oninput="update(this)">
                     </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">Schooling (Yrs) <span class="current-value" id="v-schooling">12.0</span></label>
+                    <div class="col-md-6">
+                        <label class="range-label">Schooling (Years) <span class="current-value" id="v-schooling">12.0</span></label>
                         <input type="range" name="schooling" class="form-range" min="0" max="21" step="0.1" value="12" oninput="update(this)">
                     </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">Alcohol Intake <span class="current-value" id="v-alcohol">4.6</span></label>
+                    <div class="col-md-6">
+                        <label class="range-label">Alcohol Consumption <span class="current-value" id="v-alcohol">4.6</span></label>
                         <input type="range" name="alcohol" class="form-range" min="0" max="18" step="0.1" value="4.6" oninput="update(this)">
                     </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">Total Exp. % <span class="current-value" id="v-total_expenditure">5.9</span></label>
-                        <input type="range" name="total_expenditure" class="form-range" min="0.3" max="17.6" step="0.1" value="5.9" oninput="update(this)">
-                    </div>
-                    <div class="col-sm-12">
-                        <label class="range-label">Population <span class="current-value" id="v-population">12.7M</span></label>
-                        <input type="range" name="population" class="form-range" min="34" max="1293859294" step="100000" value="12753380" oninput="updatePop(this)">
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-card">
-                <div class="category-header"><span>4</span><h3 class="m-0 h5">Social & Development</h3></div>
-                <div class="row g-4">
-                    <div class="col-sm-6">
-                        <label class="range-label">Thinness 1-19 <span class="current-value" id="v-thinness_1_19">4.8</span></label>
-                        <input type="range" name="thinness_1_19" class="form-range" min="0.1" max="27.7" step="0.1" value="4.8" oninput="update(this)">
-                    </div>
-                    <div class="col-sm-6">
-                        <label class="range-label">Thinness 5-9 <span class="current-value" id="v-thinness_5_9">4.9</span></label>
-                        <input type="range" name="thinness_5_9" class="form-range" min="0.1" max="28.6" step="0.1" value="4.9" oninput="update(this)">
-                    </div>
-                    <div class="col-sm-8">
-                        <label class="range-label">Income Composition <span class="current-value" id="v-income_composition">0.627</span></label>
-                        <input type="range" name="income_composition" class="form-range" min="0" max="1" step="0.001" value="0.627" oninput="update(this)">
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="range-label">Status</label>
+                    <div class="col-md-6">
+                        <label class="range-label">National Dev. Status</label>
                         <select name="status_developing" class="form-select">
-                            <option value="True">Developing</option>
-                            <option value="False">Developed</option>
+                            <option value="True">Developing Nation</option>
+                            <option value="False">Developed Nation</option>
                         </select>
                     </div>
-                    <input type="hidden" name="percentage_expenditure" value="738">
                 </div>
             </div>
 
-            <button type="submit" class="btn-predict">Analyze Longevity ➔</button>
+            <button type="submit" class="btn-predict">Execute Analysis Algorithm</button>
         </form>
-    </main>
+    </div>
 
     <script>
         function update(slider) {
             document.getElementById('v-' + slider.name).innerText = slider.value;
-        }
-        function updatePop(slider) {
-            const val = (slider.value / 1000000).toFixed(1);
-            document.getElementById('v-' + slider.name).innerText = val + 'M';
         }
     </script>
 </body>
