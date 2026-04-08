@@ -6,197 +6,206 @@
     <title>Analysis Result | LifePath AI</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #f0f4f8;
-            --primary: #10b981; /* Mint Green */
-            --dark: #0f172a;
-            --glass: rgba(255, 255, 255, 0.9);
-            --critical: #ef4444;
-            --warning: #f59e0b;
-            --stable: #3b82f6;
+            --bg-deep: #020617;
+            --card-bg: rgba(30, 41, 59, 0.4);
+            --accent-neon: #2dd4bf; 
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --critical: #f43f5e;
+            --warning: #fbbf24;
+            --optimal: #2dd4bf;
+            --border-glow: rgba(45, 212, 191, 0.15);
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--dark);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
+            background-color: var(--bg-deep);
+            background-image: radial-gradient(circle at 50% 100%, #1e293b 0%, #020617 100%);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        h1, h2, h3, .accent-font { font-family: 'Space Grotesk', sans-serif; }
 
-        /* --- Sidebar (Matched to Survey) --- */
-        .sidebar {
-            background-color: var(--dark);
-            color: white;
-            padding: 40px;
-            z-index: 100;
-        }
-
-        .sidebar h1 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-        }
-
-        .report-status {
-            padding: 15px;
-            border: 1px dashed #334155;
-            border-radius: 12px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        /* --- Main Content --- */
-        .main-content {
-            padding: 40px 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+        .main-wrapper { max-width: 800px; width: 100%; padding: 40px 20px; }
 
         .result-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 50px 40px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 32px;
+            padding: 60px 40px;
             text-align: center;
-            border: 1px solid white;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        /* --- Prediction Typography --- */
+        /* Ambient background glow behind the number */
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            background: var(--accent-neon);
+            filter: blur(120px);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
         .prediction-label {
-            letter-spacing: 3px;
-            font-weight: 700;
-            color: #64748b;
-            font-size: 0.85rem;
             text-transform: uppercase;
+            letter-spacing: 5px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
         .prediction-value {
-            font-size: clamp(6rem, 15vw, 10rem);
+            font-size: clamp(5rem, 15vw, 9rem);
             font-weight: 700;
             line-height: 1;
-            margin: 20px 0;
-            font-family: 'Outfit', sans-serif;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        .unit { font-size: 1.5rem; color: #94a3b8; vertical-align: middle; }
+        .unit { 
+            font-size: 1.5rem; 
+            color: var(--text-dim); 
+            margin-left: 10px;
+            font-weight: 300;
+        }
 
-        /* Dynamic Colors */
+        /* Dynamic Status Badges */
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 24px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            border: 1px solid currentColor;
+        }
+
         .color-critical { color: var(--critical); }
         .color-warning  { color: var(--warning); }
-        .color-stable   { color: var(--stable); }
-        .color-optimal  { color: var(--primary); }
+        .color-optimal  { color: var(--optimal); }
 
-        .status-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-
-        /* --- Return Button --- */
         .btn-return {
-            background: var(--dark);
-            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 32px;
+            border-radius: 14px;
             text-decoration: none;
-            padding: 18px 40px;
-            border-radius: 12px;
             font-weight: 600;
             display: inline-block;
             margin-top: 40px;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
         .btn-return:hover {
-            background: var(--primary);
-            color: white;
+            background: var(--text-main);
+            color: var(--bg-deep);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
         }
 
-        /* --- Responsive Logic --- */
-        @media (min-width: 992px) {
-            body { display: flex; }
-            .sidebar { width: 300px; height: 100vh; position: fixed; }
-            .main-content { margin-left: 300px; padding: 80px; width: calc(100% - 300px); }
+        .analysis-footer {
+            margin-top: 40px;
+            padding: 25px;
+            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 4px solid var(--accent-neon);
+            text-align: left;
         }
 
-        @media (max-width: 991px) {
-            .sidebar { width: 100%; text-align: center; padding: 20px; }
-            .report-status { display: none; }
+        .analysis-footer h6 { color: var(--accent-neon); font-size: 0.9rem; font-weight: 700; }
+        .analysis-footer p { color: var(--text-dim); font-size: 0.85rem; margin: 0; }
+
+        /* Animation for reveal */
+        .reveal-content {
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <h1>LifePath AI</h1>
-        <div class="report-status">
-            STATUS: ANALYSIS COMPLETE<br>
-            REF: {{ range(100000, 999999) | random }}<br>
-            ENGINE: V.3-FLASH
-        </div>
-    </aside>
-
-    <main class="main-content">
-        <div class="header-section mb-4">
-            <h4 class="text-primary fw-bold" style="font-size: 0.9rem; letter-spacing: 2px;">CALCULATION SUCCESSFUL</h4>
-            <h1 class="display-6 fw-bold">Your Longevity Report</h1>
-        </div>
-
+    <div class="main-wrapper">
         <div class="result-card">
-            <div class="reveal-animation">
+            <div class="reveal-content">
                 {% if pred is not none %}
                     {% set val = pred | float %}
                     
-                    <div class="status-badge 
-                        {% if val <= 55 %}bg-danger-subtle text-danger
-                        {% elif val <= 70 %}bg-warning-subtle text-warning
-                        {% else %}bg-success-subtle text-success{% endif %}">
-                        
-                        {% if val <= 55 %}Action Required
-                        {% elif val <= 70 %}Moderate Health Index
-                        {% else %}Optimal Vitality{% endif %}
+                    <div class="status-chip 
+                        {% if val <= 55 %}color-critical
+                        {% elif val <= 70 %}color-warning
+                        {% else %}color-optimal{% endif %}">
+                        <span class="dot" style="width: 8px; height: 8px; background: currentColor; border-radius: 50%;"></span>
+                        {% if val <= 55 %}Critical Health Variance
+                        {% elif val <= 70 %}Moderate Resilience
+                        {% else %}Optimal Vitality Path{% endif %}
                     </div>
 
-                    <p class="prediction-label">Estimated Life Expectancy</p>
+                    <p class="prediction-label">Estimated Longevity</p>
                     
                     <h1 class="prediction-value 
                         {% if val <= 55 %}color-critical
                         {% elif val <= 70 %}color-warning
                         {% else %}color-optimal{% endif %}">
-                        {{ pred }}<span class="unit">yrs</span>
+                        {{ pred }}<span class="unit">YRS</span>
                     </h1>
 
-                    <p class="text-muted mx-auto" style="max-width: 500px; font-size: 1.1rem;">
-                        Based on the 19 localized insights provided, your country's health markers suggest a life expectancy of <strong>{{ pred }} years</strong>. 
+                    <p class="text-dim mx-auto" style="max-width: 500px; line-height: 1.6;">
+                        Our V3-Flash engine has synthesized your 19 regional markers. 
+                        The model projects a life expectancy of <strong>{{ pred }} years</strong> 
+                        relative to current global health trends.
                     </p>
+
                 {% else %}
-                    <h3 class="text-danger">Error processing request</h3>
-                    <p>Please ensure all fields are correctly filled.</p>
+                    <div class="status-chip color-critical">Error Detected</div>
+                    <h3 class="text-white">Analysis Failed</h3>
+                    <p class="text-dim">Invalid input parameters detected. Internal regression could not be completed.</p>
                 {% endif %}
 
-                <a href="/" class="btn-return">➔ Start New Analysis</a>
+                <a href="/" class="btn-return">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Re-calibrate Parameters
+                </a>
             </div>
         </div>
 
-        <div class="mt-5 p-4 border-start border-4 border-primary bg-white rounded shadow-sm">
-            <h5 class="fw-bold">Understanding the Metric</h5>
-            <p class="text-muted small mb-0">
-                This projection is generated using a multivariate regression model. It accounts for biological vitals, economic resource composition, and immunological resilience levels relative to global averages.
+        <div class="analysis-footer">
+            <h6>Neural-Network Insights</h6>
+            <p>
+                This projection is a bio-statistical estimation based on the convergence of economic GDP, 
+                immunological saturation (Polio/Hepatitis B), and biological mortality vectors. 
+                Data calibrated against 2026 global datasets.
             </p>
         </div>
-    </main>
+    </div>
 
 </body>
 </html>
-
